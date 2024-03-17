@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css?family=Gruppo"
+      rel="stylesheet"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MINIGAME BY MHOO</title>
+    <style>
+      #game-container {
+        width: 410px;
+        height: 32px;
+        background-color: black;
+        position: absolute;
+        top: 43%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      #blue-box {
+        width: 400px;
+        height: 28px;
+        background-color: rgb(148, 150, 149);
+        position: absolute;
+        top: 5%;
+        left: 2px;
+      }
+      #green-box {
+        width: 20px;
+        height: 28px;
+        background-color: rgb(93, 161, 168);
+        position: absolute;
+        top: 5%;
+        left: calc(50% - 10px); /* Adjusted to center the green box */
+        opacity: 90%;
+      }
+
+      body {
+        font-family: 'Gruppo';
+        font-size: 18px;
+      }
+
+      body {
+        background-image: linear-gradient(120deg, #000000 0%, #696969 100%);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <h1
+        id="scoreDisplay"
+        style="color: rgb(255, 255, 255); text-align: center; margin-top: 7vh"
+      >
+        SCORE: 0
+      </h1>
+      <h3 style="color: rgb(30, 255, 0); text-align: center">
+        Press E to Play
+      </h3>
+      <br />
+      <div id="blue-box"></div>
+      <div id="green-box"></div>
+      <input
+        type="range"
+        min="5"
+        max="15"
+        value="0"
+        id="speedSlider"
+        style="margin: 0 auto; display: block"
+      />
+      <h4 style="text-align: center; color: rgb(255, 255, 255)">
+        Speed : <span id="speedValue">5</span>
+      </h4>
+    </div>
+
+    <script>
+      let interval
+      let score = 0
+
+      let sss = new Audio('./bruh.mp3')
+      let fff = new Audio('./ding.mp3')
+      fff.volume = 0.05
+
+      let position1 = 0
+      let widdd = 0
+
+      const scoreDisplay = document.getElementById('scoreDisplay')
+      const blueBox = document.getElementById('blue-box')
+      const greenBox = document.getElementById('green-box')
+      const blueBoxRect = blueBox.getBoundingClientRect()
+      const greenBoxRect = greenBox.getBoundingClientRect()
+      const gameContainer = document.getElementById('game-container')
+
+      const speedSlider = document.getElementById('speedSlider')
+      const speedValue = document.getElementById('speedValue')
+
+      // เรียกใช้ฟังก์ชัน checkMaximizeMode() เมื่อหน้าเว็บโหลดเสร็จ
+      window.onload = function () {
+        starter()
+      }
+
+      // ฟังก์ชันสำหรับตรวจสอบโหมด maximize ของเบราว์เซอร์
+      function starter() {}
+
+      speedSlider.addEventListener('input', function () {
+        speedValue.textContent = speedSlider.value
+        let speed = parseInt(speedSlider.value)
+      })
+
+      function updateScore() {
+        scoreDisplay.textContent = 'SCORE : ' + score
+        console.log(score)
+      }
+
+      function lighterbox() {
+        greenBox.style.backgroundColor = 'rgb(45, 191, 110)'
+      }
+
+      function setboxtodef() {
+        greenBox.style.backgroundColor = 'rgb(93, 161, 168)'
+      }
+
+      function moveBlueBox() {
+        let position = 2
+        interval = setInterval(() => {
+          position += parseInt(speedSlider.value)
+          blueBox.style.width = position + 'px'
+          if (position >= position1 && position <= position1 + widdd) {
+            lighterbox()
+          }
+
+          if (position >= 398 || position >= position1 + widdd - 1) {
+            clearInterval(interval)
+            setboxtodef()
+            position = 0
+            blueBox.style.left = '2'
+            moveBlueBox()
+            movegreenBox()
+            score = 0
+            updateScore()
+          }
+        }, 50)
+      }
+
+      function movegreenBox() {
+        position1 = Math.min(Math.random() * 500 + 25, 363)
+        widdd = Math.min(Math.random() * 100 + 25, 45)
+        greenBox.style.left = position1 + 'px'
+        greenBox.style.width = widdd + 'px'
+        console.log('pos', position1)
+        console.log('wid', widdd)
+      }
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'r' || event.key === 'R') {
+          alert('Reset score.')
+          score = 0
+          updateScore()
+          fff.play()
+        }
+      })
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'e' || event.key === 'E') {
+          const blueBoxRect = blueBox.getBoundingClientRect()
+          const greenBoxRect = greenBox.getBoundingClientRect()
+          setboxtodef()
+          if (
+            blueBoxRect.right >= greenBoxRect.left &&
+            blueBoxRect.right < greenBoxRect.right
+          ) {
+            clearInterval(interval)
+            position = 0
+            blueBox.style.left = '2'
+            moveBlueBox()
+            movegreenBox()
+            score++
+            updateScore()
+            console.log(score)
+            sss.play()
+          } else {
+            //alert('Too early or too late! Try again.')
+            clearInterval(interval)
+            position = 0
+            blueBox.style.left = '2'
+            moveBlueBox()
+            movegreenBox()
+            console.log(score)
+            score = 0
+            updateScore()
+            fff.play()
+          }
+        }
+      })
+
+      moveBlueBox()
+    </script>
+  </body>
+</html>
